@@ -1,5 +1,6 @@
 import math
 import sympy
+import time
 
 TOLERANCIA = 0.0000001
 
@@ -46,7 +47,7 @@ def encontrar_intervalos(f, a_macro, b_macro, passo=0.1):
         
     return intervalos_encontrados
 
-# --- MÉTODOS NUMÉRICOS (sem alterações) ---
+# --- MÉTODOS NUMÉRICOS (com retorno de iterações) ---
 
 def bisseccao(f, a, b):
     i = 1
@@ -64,11 +65,11 @@ def bisseccao(f, a, b):
         elif (img_b * img_p < 0):
             a = p
         elif img_p == 0:
-            return p
+            return p, i
         i += 1
         if not (math.fabs(img_p) > TOLERANCIA):
             break
-    return p
+    return p, i - 1
 
 def fp(f, a, b):
     i = 1
@@ -78,7 +79,7 @@ def fp(f, a, b):
         img_b = f(b)
         if (img_b - img_a) == 0:
             print("Divisão por zero no método da Falsa Posição. Interrompendo.")
-            return p
+            return p, i - 1
         p = ((a * img_b) - (b * img_a)) / (img_b - img_a)
         img_p = f(p)
         print(f"{i}: a = {a:.7f}, f(a) = {img_a:.7f}")
@@ -89,11 +90,11 @@ def fp(f, a, b):
         elif (img_b * img_p < 0):
             a = p
         elif img_p == 0:
-            return p
+            return p, i
         i += 1
         if not (math.fabs(img_p) > TOLERANCIA):
             break
-    return p
+    return p, i - 1
 
 def NewtonRaphson(ff, x):
     ant = x + 2
@@ -104,15 +105,15 @@ def NewtonRaphson(ff, x):
             x2 = ff(x2)
         except ZeroDivisionError:
             print(f"ERRO: Divisão por zero na iteração {i} de Newton-Raphson (derivada foi zero).")
-            return x2
+            return x2, i
         if (math.fabs(ant - x2) < TOLERANCIA):
-            return x2
+            return x2, i
         else:
             ant = x2
         print(f"{i}: raiz = {x2:.7f}")
         i += 1
     print(f"Não convergiu após {i-1} iterações.")
-    return x2
+    return x2, i - 1
     
 def secante(f, c1, c2):
     x = 0.0
@@ -120,19 +121,18 @@ def secante(f, c1, c2):
     x2 = c2
     i = 1
     while True:
-        # Prevenção de loop infinito se os chutes iniciais forem iguais
         if math.isclose(x1, x2):
             print("Chutes iniciais para o método da Secante são muito próximos. Interrompendo.")
-            return x1
+            return x1, 0
 
         img_x1 = f(x1)
         img_x2 = f(x2)
         if (math.fabs(img_x2) < TOLERANCIA):
-            return x2
+            return x2, i
         denominador = (img_x2 - img_x1)
         if denominador == 0:
             print("Divisão por zero no método da Secante. Interrompendo.")
-            return x2
+            return x2, i
         x = x2 - (img_x2 * (x2 - x1) / denominador)
         print(f"{i}: raiz = {x:.7f}")
         x1 = x2
@@ -140,7 +140,7 @@ def secante(f, c1, c2):
         i += 1
         if i > 500:
             print("Não convergiu após 500 iterações.")
-            return x
+            return x, i - 1
 
 # --- BLOCO PRINCIPAL ---
 if __name__ == '__main__':
@@ -174,8 +174,6 @@ if __name__ == '__main__':
     
     A, B = intervalos[escolha - 1]
     
-    
-    # Define os chutes automaticamente a partir do intervalo escolhido
     ref_nr = (A + B) / 2
     ref_s1 = A
     ref_s2 = B
@@ -186,13 +184,21 @@ if __name__ == '__main__':
     print(f"Chutes para Secante definidos como os limites do intervalo: {ref_s1:.4f} e {ref_s2:.4f}")
     print("------------------------------------")
 
+    resultados_finais = []
+
     # --- Execução dos métodos ---
     print("\n-------------BISSECCAO-------------")
-    resultado = bisseccao(f, A, B)
+    inicio_tempo = time.perf_counter()
+    resultado, iteracoes = bisseccao(f, A, B)
+    fim_tempo = time.perf_counter()
+    resultados_finais.append({'metodo': 'Bissecção', 'raiz': resultado, 'tempo': fim_tempo - inicio_tempo, 'iteracoes': iteracoes})
     print(f"Sua raiz eh: {resultado:.7f}")
     
     print("\n-------------FALSA POSICAO-------------")
-    resultado = fp(f, A, B)
+    inicio_tempo = time.perf_counter()
+    resultado, iteracoes = fp(f, A, B)
+    fim_tempo = time.perf_counter()
+    resultados_finais.append({'metodo': 'Falsa Posição', 'raiz': resultado, 'tempo': fim_tempo - inicio_tempo, 'iteracoes': iteracoes})
     print(f"Sua raiz eh: {resultado:.7f}")
 
     print("\n-------------NEWTON-RAPHSON-------------")
@@ -203,10 +209,25 @@ if __name__ == '__main__':
         derivada_val = f_derivada(x_val)
         if derivada_val == 0: raise ZeroDivisionError
         return x_val - f(x_val) / derivada_val
-    resultado = NewtonRaphson(ff, ref_nr)
+    inicio_tempo = time.perf_counter()
+    resultado, iteracoes = NewtonRaphson(ff, ref_nr)
+    fim_tempo = time.perf_counter()
+    resultados_finais.append({'metodo': 'Newton-Raphson', 'raiz': resultado, 'tempo': fim_tempo - inicio_tempo, 'iteracoes': iteracoes})
     print(f"Sua raiz eh aproximadamente {resultado:.7f}")
 
     print("\n-------------SECANTE-------------")
-    resultado = secante(f, ref_s1, ref_s2)
+    inicio_tempo = time.perf_counter()
+    resultado, iteracoes = secante(f, ref_s1, ref_s2)
+    fim_tempo = time.perf_counter()
+    resultados_finais.append({'metodo': 'Secante', 'raiz': resultado, 'tempo': fim_tempo - inicio_tempo, 'iteracoes': iteracoes})
     print(f"Sua raiz eh: {resultado:.7f}")
     print("------------------------------------")
+
+    # --- Tabela Comparativa ---
+    print("\n\n======== TABELA COMPARATIVA DE RESULTADOS ========")
+    print(f"{'Método':<20} | {'Raiz Encontrada':<25} | {'Iterações':<12} | {'Tempo de Execução (ms)':<25}") # <--- ALTERADO
+    print("-" * 90)
+    for res in resultados_finais:
+        tempo_ms = res['tempo'] * 1000 # <--- ALTERADO
+        print(f"{res['metodo']:<20} | {res['raiz']:<25.7f} | {res['iteracoes']:<12} | {tempo_ms:<25.6f}") # <--- ALTERADO
+    print("==========================================================================================")
