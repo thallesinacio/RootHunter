@@ -107,7 +107,7 @@ def NewtonRaphson(ff, x):
             print(f"ERRO: Divisão por zero na iteração {i} de Newton-Raphson (derivada foi zero).")
             return x2, i
         if (math.fabs(ant - x2) < TOLERANCIA):
-            return x2, i
+            return x2, i - 1
         else:
             ant = x2
         print(f"{i}: raiz = {x2:.7f}")
@@ -128,11 +128,11 @@ def secante(f, c1, c2):
         img_x1 = f(x1)
         img_x2 = f(x2)
         if (math.fabs(img_x2) < TOLERANCIA):
-            return x2, i
+            return x2, i - 1
         denominador = (img_x2 - img_x1)
         if denominador == 0:
             print("Divisão por zero no método da Secante. Interrompendo.")
-            return x2, i
+            return x2, i 
         x = x2 - (img_x2 * (x2 - x1) / denominador)
         print(f"{i}: raiz = {x:.7f}")
         x1 = x2
