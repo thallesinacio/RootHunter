@@ -32,7 +32,7 @@ Este programa é uma ferramenta de linha de comando, escrita em Python, para enc
 
       1.  Navegue até a pasta `versao_gui`.
       2.  Instale as dependências: `pip install customtkinter`
-      3.  Execute a interface: `python interface_grafica.py`
+      3.  Execute a interface: `python Interface.py`
 
   ### 2. Versão de Linha de Comando
 
