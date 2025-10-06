@@ -22,7 +22,29 @@ Este programa é uma ferramenta de linha de comando, escrita em Python, para enc
 
     4. Método da Secante
 
+  ## Versões Disponíveis
+
+  Este repositório contém duas versões da aplicação:
+
+  ### 1. Versão com Interface Gráfica (Recomendado)
+
+  Para usar a versão com interface visual:
+
+      1.  Navegue até a pasta `versao_gui`.
+      2.  Instale as dependências: `pip install customtkinter`
+      3.  Execute a interface: `python Interface.py`
+
+  ### 2. Versão de Linha de Comando
+
+  Para usuários que preferem o terminal ou não podem instalar a biblioteca gráfica:
+
+      1.  Navegue até a pasta `versao_terminal`.
+      2.  Execute o script: `python Trabalho_CN.py`
+      3.  Siga as instruções no terminal.
+
+    
   ## Como Usar o Programa
+
 
   ### Passo 1: Inserir a Função
   
