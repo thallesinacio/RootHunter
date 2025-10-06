@@ -62,7 +62,7 @@ class App(ctk.CTk):
         self.text_resultado.delete("1.0", "end")
         try:
             comando = [
-                sys.executable, "Trabalho_CN_Adaptado.py", "--buscar",
+                sys.executable, "versao_gui/Trabalho_CN_Adaptado.py", "--buscar",
                 self.entry_funcao.get(),
                 self.entry_a_macro.get(),
                 self.entry_b_macro.get(),
