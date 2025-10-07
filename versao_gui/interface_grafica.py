@@ -60,7 +60,7 @@ class App(ctk.CTk):
         self.text_resultado.delete("1.0", "end")
         try:
             comando = [
-                sys.executable, "versao_gui/Trabalho_CN_adaptado.py", "--buscar",
+                sys.executable, "versao_gui\Trabalho_CN_adaptado.py", "--buscar",
                 self.entry_funcao.get(),
                 self.entry_a_macro.get(),
                 self.entry_b_macro.get(),
@@ -99,7 +99,7 @@ class App(ctk.CTk):
             print(f"a='{a}', b='{b}'")  # DEBUG
 
             comando = [
-                sys.executable, "versao_gui/Trabalho_CN_adaptado.py", "--analisar",
+                sys.executable, "versao_gui\Trabalho_CN_adaptado.py", "--analisar",
                 self.entry_funcao.get(), a, b,
                 self.entry_tol.get(), self.entry_iter.get()
             ]

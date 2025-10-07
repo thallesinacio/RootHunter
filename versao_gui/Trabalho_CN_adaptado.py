@@ -119,34 +119,28 @@ def NewtonRaphson(ff, x,TOLERANCIA, max_iter):
     log.append(f"Não convergiu após {i-1} iterações.")
     return x2, i - 1,(time.perf_counter() - inicio) * 1000, "\n".join(log)
     
-def secante(f, c1, c2,TOLERANCIA, max_iter):
-    log= []
-    x = 0.0
-    x1 = c1
-    x2 = c2
-    i = 1
+def secante(f, x0, x1, tol, max_iter):
+    log = []
     inicio = time.perf_counter()
-    while i<=max_iter:
-        if math.isclose(x1, x2):
-            log.append("Chutes iniciais para o método da Secante são muito próximos. Interrompendo.")
-            return x1, 0
-
-        img_x1 = f(x1)
-        img_x2 = f(x2)
-        if (math.fabs(img_x2) < TOLERANCIA):
-             return x2, i - 1, (time.perf_counter() - inicio) * 1000, "\n".join(log)
-        denominador = (img_x2 - img_x1)
-        if denominador == 0:
-            log.append("Divisão por zero no método da Secante. Interrompendo.")
-            return x2, i, (time.perf_counter() - inicio) * 1000, "\n".join(log)
-        x = x2 - (img_x2 * (x2 - x1) / denominador)
-        log.append(f"{i}: raiz = {x:.7f}")
-        x1 = x2
-        x2 = x
-        i += 1
-        if i > max_iter:
-            log.append("Não convergiu após o maximo de iterações.")
-            return x, i - 1, (time.perf_counter() - inicio) * 1000, "\n".join(log)  
+    i = 0
+    for i in range(1, max_iter + 1):
+        if math.isclose(x0, x1):
+            log.append(f"ERRO: Chutes iniciais x0 e x1 são iguais na iteração {i}.")
+            break
+        ix1, ix0 = f(x1), f(x0)
+        denominador = (ix1 - ix0)
+        if math.isclose(denominador, 0):
+            log.append(f"ERRO: Divisão por zero na iteração {i} (f(x1) e f(x0) são iguais).")
+            break
+        x2 = x1 - (ix1 * (x1 - x0)) / denominador
+        log.append(f"{i}: raiz = {x2:.7f}")
+        if math.fabs(x2 - x1) < tol:
+            x1 = x2
+            break
+        x0, x1 = x1, x2
+    tempo_total = (time.perf_counter() - inicio) * 1000
+    return x1, i, tempo_total, "\n".join(log)
+  
         
 
 def executar_busca_intervalos(args):
